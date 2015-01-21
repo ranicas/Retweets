@@ -10,10 +10,10 @@ var rl = readline.createInterface({
   output: process.stdout
 });
 
-var Entry = require('./entry.js');
-var Collection = require('./collection.js');
+// var Entry = require('./entry.js');
+var Collection = require('./javascript/collection.js');
 var collection = new Collection();
-var n = 1; //default to 1 min refresh
+var n = null; //default to no removal
 
 var twit = new twitter({
     consumer_key: credentials.consumer_key,
@@ -41,11 +41,14 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-	rl.question("Please enter the number of minutes retweets are tracked\n", function(answer) {
-		n = parseInt(answer);
-		rl.close();
-	});
+	console.log('a user connected');
 	
+	if (n === null) {
+		rl.question("Please enter the number of minutes retweets are tracked\n", function(answer) {
+			n = parseInt(answer);
+			rl.close();
+		});
+	}	
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });

@@ -26,6 +26,10 @@ Collection.prototype.incrementCnt = function(id, text) {
 };
 
 Collection.prototype.remove = function(n) {
+	if (n === null) {
+		return;
+	}
+	
 	//remove entries n minutes ago
 	var removeTime = (new Date()).getTime() - n * 1000 * 60;	
 	var entryTime = this.collection[0].createdTime;
