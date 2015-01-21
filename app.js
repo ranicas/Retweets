@@ -2,11 +2,18 @@ var app = require('express')();
 var http = require('http').Server(app);
 var io = require('socket.io')(http);
 var twitter = require('ntwitter');
+var readline = require('readline');
 var credentials = require('./credentials.js');
+
+var rl = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+});
 
 var Entry = require('./entry.js');
 var Collection = require('./collection.js');
 var collection = new Collection();
+var n = 1; //default to 1 min refresh
 
 var twit = new twitter({
     consumer_key: credentials.consumer_key,
@@ -22,7 +29,8 @@ twit.stream(
         stream.on('data', function(tweet) {
 					if (tweet.retweeted_status) {
 						collection.add(tweet);
-						console.log(collection.retweetCnt)
+						collection.remove(n);
+						io.emit("new tweet", collection.topTen());
 					}
         });
     }
@@ -33,7 +41,11 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-  console.log('a user connected');
+	rl.question("Please enter the number of minutes retweets are tracked", function(answer) {
+		n = parseInt(answer);
+		rl.close();
+	});
+	
   socket.on('disconnect', function(){
     console.log('user disconnected');
   });

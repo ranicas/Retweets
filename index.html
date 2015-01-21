@@ -7,8 +7,12 @@
 		<script>
 		  var socket = io();
 			
-	    socket.on("new tweet", function(tweet) {
-				$('#tweets').append($('<li></li>').text(tweet.retweeted));
+	    socket.on("new tweet", function(collection) {
+				$('#tweets').html("");
+				collection.forEach(function(entry) {
+					$('#tweets').append($('<li></li>').text(entry[1] + " " + entry[2]));
+				})
+				
 	    });
 		</script>
 	</head>
