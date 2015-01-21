@@ -41,7 +41,7 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-	rl.question("Please enter the number of minutes retweets are tracked", function(answer) {
+	rl.question("Please enter the number of minutes retweets are tracked\n", function(answer) {
 		n = parseInt(answer);
 		rl.close();
 	});
