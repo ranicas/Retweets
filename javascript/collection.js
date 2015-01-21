@@ -34,17 +34,22 @@ Collection.prototype.remove = function(n) {
 	var removeTime = (new Date()).getTime() - n * 1000 * 60;	
 	var entryTime = this.collection[0].createdTime;
 	
-	//earliest in collection are the oldest
+	//only need to check the earliest since array is chronological
 	for (;entryTime < removeTime;) {
 		var entry = this.collection.shift();
-		this.retweetCnt[entry.retweetId] -= 1;
-		if (this.retweetCnt[entry.retweetId] <= 0) {
-			delete this.retweetText[entry.retweetId];
-		}
-		
+		this.removeEntry(entry);
+		//set to the next entry time	
 		entryTime = this.collection[0].createdTime;
 	}
 }; 
+
+Collection.prototype.removeEntry = function(entry) {
+	var id = entry.retweetId;
+	this.retweetCnt[id] -= 1;
+	if (this.retweetCnt[id] <= 0) {
+		delete this.retweetText[id];
+	}
+}
 
 //sort the retweets by the highest count then list top ten
 Collection.prototype.topTen = function() {
